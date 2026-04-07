@@ -12,9 +12,6 @@ class ReportController{
 				return res.status(400).json({error:"Invalid crowd position"});
 			}
 			const result = await ReportService.report(deviceid,trainId,from,to,p);
-			if (result.alreadyReported){
-				return res.json({message:"Already reported for this train today"});
-			}
 			res.json(result);
 		}
 		catch(err){

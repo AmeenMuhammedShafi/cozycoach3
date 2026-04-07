@@ -19,6 +19,11 @@ class ReportService {
         const user = await UserService.findByDeviceId(deviceid);
         if (!user) throw new Error("User not found");
 
+        // Validate station IDs
+        if (!from || !to) {
+            throw new Error("Invalid stations: from and to are required");
+        }
+
         const today = moment()
             .tz("Asia/Kolkata")
             .format("YYYY-MM-DD");
@@ -36,15 +41,18 @@ class ReportService {
             .findById(trainId)
             .populate("stops.station");
         if (!train) throw new Error("Train not found");
+        if (!train.stops || train.stops.length === 0) {
+            throw new Error("Train has no stops");
+        }
 
         const fromStop = train.stops.find(
-            s => s.station._id.toString() === from
+            s => s.station && s.station._id.toString() === from.toString()
         );
         const toStop = train.stops.find(
-            s => s.station._id.toString() === to
+            s => s.station && s.station._id.toString() === to.toString()
         );
         if (!fromStop || !toStop) {
-            throw new Error("Invalid stations");
+            throw new Error(`Invalid stations: fromStop=${!!fromStop}, toStop=${!!toStop}`);
         }
         if (fromStop.order >= toStop.order) {
             throw new Error("Invalid route");
