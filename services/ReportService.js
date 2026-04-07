@@ -112,6 +112,19 @@ class ReportService {
         }
 
         console.log(`💾 Creating UserInput: user=${user._id}, crowd=${JSON.stringify(crowdVector)}`);
+        console.log(`   from station: ${fromStop.station?._id}, to station: ${toStop.station?._id}`);
+        
+        if (!fromStop.station || !toStop.station) {
+            console.log("   ❌ Station objects are null!");
+            console.log(`      fromStop.station: ${fromStop.station}`);
+            console.log(`      toStop.station: ${toStop.station}`);
+            throw new Error(`Station data missing: from=${!!fromStop.station}, to=${!!toStop.station}`);
+        }
+
+        if (!fromStop.station._id || !toStop.station._id) {
+            console.log("   ❌ Station IDs are null!");
+            throw new Error(`Station IDs missing`);
+        }
         
         const userInput = await UserInputs.create({
             user: user._id,
