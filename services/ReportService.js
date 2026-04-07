@@ -16,6 +16,8 @@ const adjacent = {
 class ReportService {
 
     static async report(deviceid, trainId, from, to, position) {
+        console.log(`📝 Report: device=${deviceid}, train=${trainId}, from=${from}, to=${to}, pos=${position}`);
+        
         const user = await UserService.findByDeviceId(deviceid);
         if (!user) throw new Error("User not found");
 
@@ -34,6 +36,7 @@ class ReportService {
             date: today
         });
         if (alreadyReported) {
+            console.log(`ℹ️ Already reported today`);
             return { alreadyReported: true };
         }
 
@@ -45,13 +48,32 @@ class ReportService {
             throw new Error("Train has no stops");
         }
 
-        const fromStop = train.stops.find(
-            s => s.station && s.station._id.toString() === from.toString()
-        );
-        const toStop = train.stops.find(
-            s => s.station && s.station._id.toString() === to.toString()
-        );
+        console.log(`🚂 Train: ${train.name}, stops: ${train.stops.length}`);
+
+        // Convert from/to to strings for comparison
+        const fromStr = from.toString();
+        const toStr = to.toString();
+
+        // More robust stop finding
+        const fromStop = train.stops.find(s => {
+            if (!s.station) return false;
+            const stationId = s.station._id ? s.station._id.toString() : s.station.toString();
+            return stationId === fromStr;
+        });
+        
+        const toStop = train.stops.find(s => {
+            if (!s.station) return false;
+            const stationId = s.station._id ? s.station._id.toString() : s.station.toString();
+            return stationId === toStr;
+        });
+
+        console.log(`🔍 From stop: ${!!fromStop}, To stop: ${!!toStop}`);
         if (!fromStop || !toStop) {
+            console.log(`❌ Stop search failed. Train has ${train.stops.length} stops:`);
+            train.stops.forEach((s, i) => {
+                const stnId = s.station?._id?.toString() || s.station?.toString() || 'null';
+                console.log(`   [${i}] Stop order=${s.order}, station=${stnId}, name=${s.station?.name}`);
+            });
             throw new Error(`Invalid stations: fromStop=${!!fromStop}, toStop=${!!toStop}`);
         }
         if (fromStop.order >= toStop.order) {
@@ -89,7 +111,9 @@ class ReportService {
             }
         }
 
-        await UserInputs.create({
+        console.log(`💾 Creating UserInput: user=${user._id}, crowd=${JSON.stringify(crowdVector)}`);
+        
+        const userInput = await UserInputs.create({
             user: user._id,
             train: trainId,
             from: fromStop.station._id,
@@ -100,6 +124,8 @@ class ReportService {
             crowd: crowdVector,
             active: true
         });
+        
+        console.log(`✅ UserInput created: ${userInput._id}`);
 
         await UserService.addXp(user, 10);
 

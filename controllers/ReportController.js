@@ -15,6 +15,7 @@ class ReportController{
 			res.json(result);
 		}
 		catch(err){
+			console.error("❌ Report error:", err.message, err.stack);
 			res.status(500).json({error:err.message});
 		}
 	}
