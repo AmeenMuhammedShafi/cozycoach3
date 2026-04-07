@@ -1,8 +1,8 @@
 $body = @{
     deviceid = "cc_test123"
-    trainId = "69d4c8aaf77d8bc84bdcd418"
-    from = "69d4c8aaf77d8bc84bdcd40c"
-    to = "69d4c8aaf77d8bc84bdcd40e"
+    trainId = "69d4dd6efe87d4b01391520c"
+    from = "69d4dd6efe87d4b013915201"
+    to = "69d4dd6efe87d4b013915203"
     position = "f"
 } | ConvertTo-Json
 
