@@ -2,7 +2,7 @@ import Users from "../models/Users.js";
 
 export default async function deviceAuth(req, res, next) {
     try {
-        const deviceid = req.body.deviceid || req.query.deviceid;
+        const deviceid = req.body?.deviceid || req.query.deviceid;
 
         if (!deviceid) {
             return res.status(400).json({ error: "Device ID is required" });
