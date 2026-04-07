@@ -15,6 +15,22 @@ class TrainController{
 		}
 	}
 
+	static async getById(req,res){
+		try{
+			const {trainId} = req.params;
+			if (!trainId){
+				return res.status(400).json({error:"Train ID is required"});
+			}
+			const train = await TrainService.findById(trainId);
+			if (!train){
+				return res.status(404).json({error:"Train not found"});
+			}
+			res.json(train);
+		}
+		catch(err){
+			res.status(500).json({error:err.message});
+		}
+	}
 
 }
 
