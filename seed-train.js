@@ -33,9 +33,9 @@ async function seedData() {
         number: 2671,
         status: "scheduled",
         stops: [
-          { station: stations[0]._id, order: 1, arrival: "00:15", departure: "00:25" },
-          { station: stations[1]._id, order: 2, arrival: "01:45", departure: "01:55" },
-          { station: stations[2]._id, order: 3, arrival: "03:30", departure: "03:40" }
+          { station: stations[0]._id, order: 1, arrival: "16:05", departure: "16:15" },
+          { station: stations[1]._id, order: 2, arrival: "17:45", departure: "17:55" },
+          { station: stations[2]._id, order: 3, arrival: "19:30", departure: "19:40" }
         ],
         currentstationid: null,
         nextstationid: stations[0]._id,
@@ -46,8 +46,8 @@ async function seedData() {
         number: 2951,
         status: "enroute",
         stops: [
-          { station: stations[3]._id, order: 1, arrival: "10:00", departure: "10:15" },
-          { station: stations[4]._id, order: 2, arrival: "18:30", departure: "18:45" }
+          { station: stations[3]._id, order: 1, arrival: "16:05", departure: "16:15" },
+          { station: stations[4]._id, order: 2, arrival: "00:30", departure: "00:45" }
         ],
         currentstationid: stations[3]._id,
         nextstationid: stations[4]._id,
