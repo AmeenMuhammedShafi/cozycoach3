@@ -9,12 +9,23 @@ class CrowdService {
         const today = moment()
             .tz("Asia/Kolkata")
             .format("YYYY-MM-DD");
-        const crowd = await CrowdStatus.findOne({
+        let crowd = await CrowdStatus.findOne({
             train,
             date: today
         });
+        
+        // If no crowd data exists, create default
+        if (!crowd) {
+            crowd = new CrowdStatus({
+                train,
+                date: today,
+                crowd: { f: 0.33, m: 0.34, r: 0.33 }
+            });
+            await crowd.save();
+        }
+        
         return {
-            crowd: crowd ? crowd.crowd : null
+            crowd: crowd.crowd
         };
     }
 
