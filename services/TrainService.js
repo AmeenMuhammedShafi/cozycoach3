@@ -5,7 +5,7 @@ import DelayService from "./DelayService.js";
 class TrainService {
 
    static async findById(id){
-      return Trains.findById(id);
+      return Trains.findById(id).populate('stops.station', 'name code _id');
    }
 
    static async searchByRoute(from,to){
@@ -28,7 +28,7 @@ class TrainService {
          "stops.station":{
             $all:[fromstn._id,tostn._id]
          }
-      }).populate('stops.station','name code');
+      }).populate('stops.station', 'name code _id');
       return trains.filter(train => {
          const fromindex =
             train.stops.findIndex(
@@ -60,9 +60,9 @@ class TrainService {
    static async getStatus(trainno) {
     const train = await Trains
         .findOne({ number: trainno })
-        .populate("currentstationid", "name code")
-        .populate("lastprocessedstation", "name code")
-        .populate("stops.station", "name code");
+        .populate("currentstationid", "name code _id")
+        .populate("lastprocessedstation", "name code _id")
+        .populate("stops.station", "name code _id");
 
     if (!train) {
         throw new Error("Train not found");
@@ -78,7 +78,10 @@ class TrainService {
             );
 
         updatedStops.push({
-            ...stop.toObject(),
+            station: stop.station,
+            order: stop.order,
+            arrival: stop.arrival,
+            departure: stop.departure,
             effectiveArrival:
                 effectiveArrival.format("HH:mm")
         });
