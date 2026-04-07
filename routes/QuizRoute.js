@@ -1,9 +1,10 @@
 import express from "express";
 import QuizController from "../controllers/QuizController.js";
+import deviceAuth from "../middleware/deviceAuth.js";
 
 const router = express.Router();
 
-router.get('/', QuizController.getQuestion);
-router.post('/answer', QuizController.checkAnswer);
+router.get('/', deviceAuth, QuizController.getQuestion);
+router.post('/answer', deviceAuth, QuizController.checkAnswer);
 
 export default router;
