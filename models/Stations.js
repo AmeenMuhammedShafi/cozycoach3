@@ -18,9 +18,4 @@ const stationsschema = new mongoose.Schema({
     }
 });
 
-stationsschema.pre('save', function(next) {
-    this.code = this.code.toUpperCase();
-    next();
-});
-
 export default mongoose.model("Stations", stationsschema);

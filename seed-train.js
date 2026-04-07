@@ -10,13 +10,18 @@ async function seedData() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
+    // Clear existing data
+    await Stations.deleteMany({});
+    await Trains.deleteMany({});
+    console.log("🧹 Cleared existing data");
+
     // 1️⃣ CREATE STATIONS
     const stations = await Stations.create([
-      { name: "Kozhikode", code: "CLT" },
-      { name: "Kannur", code: "CAN" },
-      { name: "Thalassery", code: "TLY" },
-      { name: "Mumbai", code: "MMCT" },
-      { name: "Delhi", code: "NDLS" }
+      { name: "Kozhikode", code: "CLT".toUpperCase() },
+      { name: "Kannur", code: "CAN".toUpperCase() },
+      { name: "Thalassery", code: "TLY".toUpperCase() },
+      { name: "Mumbai", code: "MMCT".toUpperCase() },
+      { name: "Delhi", code: "NDLS".toUpperCase() }
     ]);
     console.log("✅ Created " + stations.length + " stations");
     stations.forEach((s, i) => console.log(`  ${i+1}. ${s.name} (${s.code}) - ID: ${s._id}`));
@@ -39,7 +44,7 @@ async function seedData() {
       {
         name: "Rajdhani Express",
         number: 2951,
-        status: "running",
+        status: "enroute",
         stops: [
           { station: stations[3]._id, order: 1, arrival: "10:00", departure: "10:15" },
           { station: stations[4]._id, order: 2, arrival: "18:30", departure: "18:45" }
