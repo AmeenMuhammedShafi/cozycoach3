@@ -92,8 +92,6 @@ async function seedData() {
     ]);
     console.log("\n✅ Created " + users.length + " users");
 
-    const today = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
-
     const userInputs = await UserInputs.create([
       {
         user: users[0]._id,

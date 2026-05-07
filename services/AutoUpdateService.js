@@ -25,8 +25,7 @@ class AutoUpdateService {
 	            continue;
             }
 			for (let i = 0; i < stops.length; i++) {
-				const stop = stops[i];
-				const arrivalTime = await DelayService.getEffectiveArrival(train._id, stop);
+				const stop = stops[i];			const nextStop = stops[i + 1];				const arrivalTime = await DelayService.getEffectiveArrival(train._id, stop);
 				const departureTime = stop.departure
 				? await DelayService.getEffectiveArrival(train._id, stop)
 				: arrivalTime.clone().add(2, 'minutes');
