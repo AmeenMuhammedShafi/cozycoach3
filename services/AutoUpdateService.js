@@ -28,10 +28,8 @@ class AutoUpdateService {
 				const stop = stops[i];
 				const arrivalTime = await DelayService.getEffectiveArrival(train._id, stop);
 				const departureTime = stop.departure
-					? await DelayService.getEffectiveArrival(train._id, stop) // you can adjust for departure
-					: arrivalTime.clone().add(2, 'minutes'); // default 2 min stop
-
-				const nextStop = stops[i + 1];
+				? await DelayService.getEffectiveArrival(train._id, stop)
+				: arrivalTime.clone().add(2, 'minutes');
 				const nextArrival = nextStop
 					? await DelayService.getEffectiveArrival(train._id, nextStop)
 					: null;

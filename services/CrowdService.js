@@ -14,7 +14,6 @@ class CrowdService {
             date: today
         });
         
-        // If no crowd data exists, create default
         if (!crowd) {
             crowd = new CrowdStatus({
                 train,
