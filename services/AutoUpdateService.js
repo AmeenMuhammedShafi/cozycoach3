@@ -7,7 +7,7 @@ import DelayService from "./DelayService.js";
 class AutoUpdateService {
 
 	static async runCronUpdate() {
-		const now = moment().tz("Asia/Kolkata");
+		const now = moment();
 		const today = now.format("YYYY-MM-DD");
 
 		const trains = await Trains.find().populate("stops.station");

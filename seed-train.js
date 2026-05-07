@@ -34,7 +34,7 @@ async function seedData() {
     console.log("\n✅ Created " + stations.length + " stations");
     stations.forEach((s, i) => console.log(`  ${i+1}. ${s.name} (${s.code})`));
 
-    const now = moment().tz("Asia/Kolkata");
+    const now = moment();
     const today = now.format("YYYY-MM-DD");
     
     const t1_arr = now.clone().subtract(30, 'minutes').format("HH:mm");
