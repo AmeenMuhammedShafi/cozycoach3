@@ -35,28 +35,21 @@ async function seedData() {
     stations.forEach((s, i) => console.log(`  ${i+1}. ${s.name} (${s.code})`));
 
     const now = moment().tz("Asia/Kolkata");
-    const h = now.format("HH");
-    const m = now.format("mm");
+    const today = now.format("YYYY-MM-DD");
     
-    const t1_arr = now.clone().subtract(15, 'minutes').format("HH:mm");
-    const t1_dep = now.clone().subtract(10, 'minutes').format("HH:mm");
-    const t1_arr2 = now.clone().add(15, 'minutes').format("HH:mm");
-    const t1_dep2 = now.clone().add(20, 'minutes').format("HH:mm");
-    const t1_arr3 = now.clone().add(45, 'minutes').format("HH:mm");
-    const t1_dep3 = now.clone().add(50, 'minutes').format("HH:mm");
-    const t1_arr4 = now.clone().add(90, 'minutes').format("HH:mm");
+    const t1_arr = now.clone().subtract(30, 'minutes').format("HH:mm");
+    const t1_dep = now.clone().subtract(25, 'minutes').format("HH:mm");
+    const t1_arr2 = now.clone().add(20, 'minutes').format("HH:mm");
+    const t1_dep2 = now.clone().add(25, 'minutes').format("HH:mm");
+    const t1_arr3 = now.clone().add(50, 'minutes').format("HH:mm");
+    const t1_dep3 = now.clone().add(55, 'minutes').format("HH:mm");
+    const t1_arr4 = now.clone().add(100, 'minutes').format("HH:mm");
 
-    const t2_arr = now.clone().subtract(20, 'minutes').format("HH:mm");
-    const t2_dep = now.clone().subtract(15, 'minutes').format("HH:mm");
+    const t2_arr = now.clone().subtract(40, 'minutes').format("HH:mm");
+    const t2_dep = now.clone().subtract(35, 'minutes').format("HH:mm");
     const t2_arr2 = now.clone().add(30, 'minutes').format("HH:mm");
     const t2_dep2 = now.clone().add(35, 'minutes').format("HH:mm");
-    const t2_arr3 = now.clone().add(120, 'minutes').format("HH:mm");
-
-    const t3_arr = now.clone().add(60, 'minutes').format("HH:mm");
-    const t3_dep = now.clone().add(65, 'minutes').format("HH:mm");
-    const t3_arr2 = now.clone().add(90, 'minutes').format("HH:mm");
-    const t3_dep2 = now.clone().add(95, 'minutes').format("HH:mm");
-    const t3_arr3 = now.clone().add(150, 'minutes').format("HH:mm");
+    const t2_arr3 = now.clone().add(150, 'minutes').format("HH:mm");
 
     const trains = await Trains.create([
       {
@@ -85,19 +78,6 @@ async function seedData() {
         currentstationid: null,
         nextstationid: stations[3]._id,
         lastprocessedstation: stations[4]._id
-      },
-      {
-        name: "Island Express",
-        number: 6501,
-        status: "scheduled",
-        stops: [
-          { station: stations[0]._id, order: 1, arrival: t3_arr, departure: t3_dep },
-          { station: stations[1]._id, order: 2, arrival: t3_arr2, departure: t3_dep2 },
-          { station: stations[3]._id, order: 3, arrival: t3_arr3, departure: t3_arr3 }
-        ],
-        currentstationid: null,
-        nextstationid: stations[0]._id,
-        lastprocessedstation: null
       }
     ]);
     console.log("\n✅ Created " + trains.length + " trains");
@@ -150,28 +130,6 @@ async function seedData() {
       },
       {
         user: users[3]._id,
-        train: trains[0]._id,
-        from: stations[0]._id,
-        to: stations[2]._id,
-        fromOrder: 1,
-        toOrder: 3,
-        date: today,
-        crowd: { f: 0.65, m: 0.25, r: 0.10 },
-        active: true
-      },
-      {
-        user: users[4]._id,
-        train: trains[0]._id,
-        from: stations[1]._id,
-        to: stations[2]._id,
-        fromOrder: 2,
-        toOrder: 3,
-        date: today,
-        crowd: { f: 0.10, m: 0.15, r: 0.75 },
-        active: true
-      },
-      {
-        user: users[0]._id,
         train: trains[1]._id,
         from: stations[4]._id,
         to: stations[5]._id,
@@ -182,7 +140,7 @@ async function seedData() {
         active: true
       },
       {
-        user: users[1]._id,
+        user: users[4]._id,
         train: trains[1]._id,
         from: stations[4]._id,
         to: stations[3]._id,
@@ -190,17 +148,6 @@ async function seedData() {
         toOrder: 2,
         date: today,
         crowd: { f: 0.25, m: 0.50, r: 0.25 },
-        active: true
-      },
-      {
-        user: users[2]._id,
-        train: trains[1]._id,
-        from: stations[3]._id,
-        to: stations[5]._id,
-        fromOrder: 2,
-        toOrder: 3,
-        date: today,
-        crowd: { f: 0.35, m: 0.35, r: 0.30 },
         active: true
       }
     ]);
@@ -216,11 +163,6 @@ async function seedData() {
         train: trains[1]._id,
         date: today,
         crowd: { f: 0.30, m: 0.42, r: 0.28 }
-      },
-      {
-        train: trains[2]._id,
-        date: today,
-        crowd: { f: 0.33, m: 0.34, r: 0.33 }
       }
     ]);
     console.log("✅ Created " + crowdStatuses.length + " aggregated crowd statuses");
@@ -228,78 +170,42 @@ async function seedData() {
     const quizzes = await Quiz.create([
       {
         quizno: 1,
-        question: "Which is India's busiest railway station by passenger volume?",
-        option1: "Victoria Terminus, Mumbai",
-        option2: "Grand Central Terminal, New York",
-        option3: "Grand Central, Bangkok",
+        question: "Which Indian city has the most railway stations?",
+        option1: "Mumbai",
+        option2: "Delhi",
+        option3: "Kolkata",
         answer: 1,
-        subject: "Transit Knowledge"
+        subject: "Railways"
       },
       {
         quizno: 2,
-        question: "What is the safest position in a crowded train?",
-        option1: "Near the doors",
-        option2: "Middle section away from doors",
-        option3: "Roof top",
+        question: "What is the safest zone in a crowded train?",
+        option1: "Near the door",
+        option2: "Middle section",
+        option3: "Window side",
         answer: 2,
         subject: "Safety"
       },
       {
         quizno: 3,
-        question: "Indian Railways operates approximately how many daily trains?",
-        option1: "5,000+",
-        option2: "10,000+",
-        option3: "20,000+",
-        answer: 3,
-        subject: "Transit Knowledge"
-      },
-      {
-        quizno: 4,
-        question: "What does 'crowd consensus' mean in CozyCoach?",
-        option1: "One person's opinion",
-        option2: "Aggregated data from multiple users",
-        option3: "AI prediction only",
-        answer: 2,
-        subject: "CozyCoach"
-      },
-      {
-        quizno: 5,
-        question: "How many XP do you need for one lottery ticket?",
+        question: "How many XP equals 1 lottery ticket?",
         option1: "25 XP",
         option2: "50 XP",
-        option3: "100 XP",
+        option3: "75 XP",
         answer: 2,
         subject: "CozyCoach"
       }
     ]);
     console.log("✅ Created " + quizzes.length + " quiz questions");
 
-    console.log("\n🎯 COMPLETE TEST DATA READY FOR EVALUATION!");
-    console.log("\n📊 Demo Scenario (Times are dynamic based on current time):");
-    console.log("  Train: Kerala Express (#2671) - AT STATION (Kozhikode now)");
-    console.log("  Route: Kozhikode → Kannur → Thalassery → Bangalore");
-    console.log("  Status: Currently at Kozhikode, leaving in ~5 minutes");
-    console.log("\n  Train: Rajdhani Express (#2951) - ENROUTE");
-    console.log("  Route: Mumbai → Bangalore → Delhi");
-    console.log("  Status: Between stations, next is Bangalore");
-    console.log("\n  Train: Island Express (#6501) - AT STATION (Kozhikode now)");
-    console.log("  Route: Kozhikode → Kannur → Bangalore");
-    console.log("  Status: Scheduled departure to Kannur");
-    console.log("\n  User Reports (5 reports with crowd data):");
-    console.log("    - Aggregated result: F: 43%, M: 38%, R: 19%");
-    console.log("    - Multiple users reporting on different segments");
-    console.log("\n  ✅ All trains are LIVE and can be reported on NOW");
-    console.log("  ✅ Crowd data is aggregated and ready to view");
-
-    console.log("\n✨ Key Features Demonstrated:");
-    console.log("  ✓ Multiple stations with different baseline crowd distributions");
-    console.log("  ✓ Multiple trains with varied routes and statuses");
-    console.log("  ✓ Multiple users reporting on different train segments");
-    console.log("  ✓ Aggregated crowd results (not just baseline)");
-    console.log("  ✓ Real-time crowd consensus from user reports");
-    console.log("  ✓ Different crowd position distributions (front/middle/rear)");
-    console.log("  ✓ 5 daily quiz questions with answers");
-    console.log("  ✓ All trains currently ACTIVE for reporting and crowd viewing");
+    console.log("\n✅ Seed Complete!");
+    console.log("\n📊 Data Created:");
+    console.log("  🚂 2 Trains - BOTH ENROUTE (ready to report on)");
+    console.log("  🏙️ 6 Stations");
+    console.log("  👥 5 Users (all initialized)");
+    console.log("  📊 5 User Reports (with aggregated crowd data)");
+    console.log("  ❓ 3 Quiz Questions");
+    console.log("\n✨ TRAINS ARE LIVE - You can now search, report, and view crowd data!");
 
     await mongoose.connection.close();
     console.log("\n✅ Seed completed successfully!");
