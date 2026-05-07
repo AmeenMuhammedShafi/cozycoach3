@@ -38,38 +38,38 @@ async function seedData() {
     const h = now.format("HH");
     const m = now.format("mm");
     
-    const t1_arr = now.clone().add(5, 'minutes').format("HH:mm");
-    const t1_dep = now.clone().add(10, 'minutes').format("HH:mm");
-    const t1_arr2 = now.clone().add(30, 'minutes').format("HH:mm");
-    const t1_dep2 = now.clone().add(35, 'minutes').format("HH:mm");
-    const t1_arr3 = now.clone().add(60, 'minutes').format("HH:mm");
-    const t1_dep3 = now.clone().add(65, 'minutes').format("HH:mm");
-    const t1_arr4 = now.clone().add(120, 'minutes').format("HH:mm");
+    const t1_arr = now.clone().subtract(15, 'minutes').format("HH:mm");
+    const t1_dep = now.clone().subtract(10, 'minutes').format("HH:mm");
+    const t1_arr2 = now.clone().add(15, 'minutes').format("HH:mm");
+    const t1_dep2 = now.clone().add(20, 'minutes').format("HH:mm");
+    const t1_arr3 = now.clone().add(45, 'minutes').format("HH:mm");
+    const t1_dep3 = now.clone().add(50, 'minutes').format("HH:mm");
+    const t1_arr4 = now.clone().add(90, 'minutes').format("HH:mm");
 
-    const t2_arr = now.clone().add(10, 'minutes').format("HH:mm");
-    const t2_dep = now.clone().add(15, 'minutes').format("HH:mm");
-    const t2_arr2 = now.clone().add(90, 'minutes').format("HH:mm");
-    const t2_dep2 = now.clone().add(95, 'minutes').format("HH:mm");
-    const t2_arr3 = now.clone().add(300, 'minutes').format("HH:mm");
+    const t2_arr = now.clone().subtract(20, 'minutes').format("HH:mm");
+    const t2_dep = now.clone().subtract(15, 'minutes').format("HH:mm");
+    const t2_arr2 = now.clone().add(30, 'minutes').format("HH:mm");
+    const t2_dep2 = now.clone().add(35, 'minutes').format("HH:mm");
+    const t2_arr3 = now.clone().add(120, 'minutes').format("HH:mm");
 
-    const t3_arr = now.clone().add(200, 'minutes').format("HH:mm");
-    const t3_dep = now.clone().add(210, 'minutes').format("HH:mm");
-    const t3_arr2 = now.clone().add(350, 'minutes').format("HH:mm");
-    const t3_dep2 = now.clone().add(360, 'minutes').format("HH:mm");
-    const t3_arr3 = now.clone().add(450, 'minutes').format("HH:mm");
+    const t3_arr = now.clone().add(60, 'minutes').format("HH:mm");
+    const t3_dep = now.clone().add(65, 'minutes').format("HH:mm");
+    const t3_arr2 = now.clone().add(90, 'minutes').format("HH:mm");
+    const t3_dep2 = now.clone().add(95, 'minutes').format("HH:mm");
+    const t3_arr3 = now.clone().add(150, 'minutes').format("HH:mm");
 
     const trains = await Trains.create([
       {
         name: "Kerala Express",
         number: 2671,
-        status: "at_station",
+        status: "enroute",
         stops: [
           { station: stations[0]._id, order: 1, arrival: t1_arr, departure: t1_dep },
           { station: stations[1]._id, order: 2, arrival: t1_arr2, departure: t1_dep2 },
           { station: stations[2]._id, order: 3, arrival: t1_arr3, departure: t1_dep3 },
           { station: stations[3]._id, order: 4, arrival: t1_arr4, departure: t1_arr4 }
         ],
-        currentstationid: stations[0]._id,
+        currentstationid: null,
         nextstationid: stations[1]._id,
         lastprocessedstation: stations[0]._id
       },
@@ -89,14 +89,14 @@ async function seedData() {
       {
         name: "Island Express",
         number: 6501,
-        status: "at_station",
+        status: "scheduled",
         stops: [
           { station: stations[0]._id, order: 1, arrival: t3_arr, departure: t3_dep },
           { station: stations[1]._id, order: 2, arrival: t3_arr2, departure: t3_dep2 },
           { station: stations[3]._id, order: 3, arrival: t3_arr3, departure: t3_arr3 }
         ],
-        currentstationid: stations[0]._id,
-        nextstationid: stations[1]._id,
+        currentstationid: null,
+        nextstationid: stations[0]._id,
         lastprocessedstation: null
       }
     ]);
