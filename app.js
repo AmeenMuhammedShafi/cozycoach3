@@ -32,17 +32,25 @@ app.use("/api/user", UserRoutes);
 app.use("/api/admin", AdminRoutes);
 app.use("/api/station", StationRoutes);
 app.use("/api/train", TrainRoutes);
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.error("MongoDB connection error:", err));
 
-cron.schedule("* * * * *", async () => {
-  try {
-    await AutoUpdateService.runCronUpdate();
-    console.log(" Train & crowd auto-update run at", new Date().toLocaleTimeString());
-  } catch (err) {
-    console.error(" Cron job error:", err.message);
-  }
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
+.then(() => {
+  console.log("MongoDB connected");
+  cron.schedule("* * * * *", async () => {
+    try {
+      await AutoUpdateService.runCronUpdate();
+      console.log(" Train & crowd auto-update run at", new Date().toLocaleTimeString());
+    } catch (err) {
+      console.error(" Cron job error:", err.message);
+    }
+  });
+})
+.catch(err => {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
 });
 
 const PORT = process.env.PORT || 5000;

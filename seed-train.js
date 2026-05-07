@@ -5,6 +5,7 @@ import Trains from "./models/Trains.js";
 import Users from "./models/Users.js";
 import UserInputs from "./models/UserInputs.js";
 import CrowdStatus from "./models/CrowdStatus.js";
+import Quiz from "./models/Quiz.js";
 import moment from "moment-timezone";
 
 dotenv.config();
@@ -19,6 +20,7 @@ async function seedData() {
     await Users.deleteMany({});
     await UserInputs.deleteMany({});
     await CrowdStatus.deleteMany({});
+    await Quiz.deleteMany({});
     console.log("🧹 Cleared existing data");
 
     const stations = await Stations.create([
@@ -29,48 +31,72 @@ async function seedData() {
       { name: "Mumbai", code: "MMCT", skeleton: { f: 0.33, m: 0.34, r: 0.33 } },
       { name: "Delhi", code: "NDLS", skeleton: { f: 0.30, m: 0.35, r: 0.35 } }
     ]);
-    console.log("✅ Created " + stations.length + " stations");
+    console.log("\n✅ Created " + stations.length + " stations");
     stations.forEach((s, i) => console.log(`  ${i+1}. ${s.name} (${s.code})`));
+
+    const now = moment().tz("Asia/Kolkata");
+    const h = now.format("HH");
+    const m = now.format("mm");
+    
+    const t1_arr = now.clone().add(5, 'minutes').format("HH:mm");
+    const t1_dep = now.clone().add(10, 'minutes').format("HH:mm");
+    const t1_arr2 = now.clone().add(30, 'minutes').format("HH:mm");
+    const t1_dep2 = now.clone().add(35, 'minutes').format("HH:mm");
+    const t1_arr3 = now.clone().add(60, 'minutes').format("HH:mm");
+    const t1_dep3 = now.clone().add(65, 'minutes').format("HH:mm");
+    const t1_arr4 = now.clone().add(120, 'minutes').format("HH:mm");
+
+    const t2_arr = now.clone().add(10, 'minutes').format("HH:mm");
+    const t2_dep = now.clone().add(15, 'minutes').format("HH:mm");
+    const t2_arr2 = now.clone().add(90, 'minutes').format("HH:mm");
+    const t2_dep2 = now.clone().add(95, 'minutes').format("HH:mm");
+    const t2_arr3 = now.clone().add(300, 'minutes').format("HH:mm");
+
+    const t3_arr = now.clone().add(200, 'minutes').format("HH:mm");
+    const t3_dep = now.clone().add(210, 'minutes').format("HH:mm");
+    const t3_arr2 = now.clone().add(350, 'minutes').format("HH:mm");
+    const t3_dep2 = now.clone().add(360, 'minutes').format("HH:mm");
+    const t3_arr3 = now.clone().add(450, 'minutes').format("HH:mm");
 
     const trains = await Trains.create([
       {
         name: "Kerala Express",
         number: 2671,
-        status: "enroute",
+        status: "at_station",
         stops: [
-          { station: stations[0]._id, order: 1, arrival: "08:00", departure: "08:15" },
-          { station: stations[1]._id, order: 2, arrival: "09:30", departure: "09:45" },
-          { station: stations[2]._id, order: 3, arrival: "11:00", departure: "11:15" },
-          { station: stations[3]._id, order: 4, arrival: "14:30", departure: "14:45" }
+          { station: stations[0]._id, order: 1, arrival: t1_arr, departure: t1_dep },
+          { station: stations[1]._id, order: 2, arrival: t1_arr2, departure: t1_dep2 },
+          { station: stations[2]._id, order: 3, arrival: t1_arr3, departure: t1_dep3 },
+          { station: stations[3]._id, order: 4, arrival: t1_arr4, departure: t1_arr4 }
         ],
-        currentstationid: stations[1]._id,
-        nextstationid: stations[2]._id,
-        lastprocessedstation: stations[1]._id
+        currentstationid: stations[0]._id,
+        nextstationid: stations[1]._id,
+        lastprocessedstation: stations[0]._id
       },
       {
         name: "Rajdhani Express",
         number: 2951,
         status: "enroute",
         stops: [
-          { station: stations[4]._id, order: 1, arrival: "10:00", departure: "10:15" },
-          { station: stations[3]._id, order: 2, arrival: "16:00", departure: "16:15" },
-          { station: stations[5]._id, order: 3, arrival: "22:00", departure: "22:15" }
+          { station: stations[4]._id, order: 1, arrival: t2_arr, departure: t2_dep },
+          { station: stations[3]._id, order: 2, arrival: t2_arr2, departure: t2_dep2 },
+          { station: stations[5]._id, order: 3, arrival: t2_arr3, departure: t2_arr3 }
         ],
-        currentstationid: stations[3]._id,
-        nextstationid: stations[5]._id,
-        lastprocessedstation: stations[3]._id
+        currentstationid: null,
+        nextstationid: stations[3]._id,
+        lastprocessedstation: stations[4]._id
       },
       {
         name: "Island Express",
         number: 6501,
-        status: "scheduled",
+        status: "at_station",
         stops: [
-          { station: stations[0]._id, order: 1, arrival: "12:00", departure: "12:30" },
-          { station: stations[1]._id, order: 2, arrival: "13:45", departure: "14:00" },
-          { station: stations[3]._id, order: 3, arrival: "17:15", departure: "17:30" }
+          { station: stations[0]._id, order: 1, arrival: t3_arr, departure: t3_dep },
+          { station: stations[1]._id, order: 2, arrival: t3_arr2, departure: t3_dep2 },
+          { station: stations[3]._id, order: 3, arrival: t3_arr3, departure: t3_arr3 }
         ],
-        currentstationid: null,
-        nextstationid: stations[0]._id,
+        currentstationid: stations[0]._id,
+        nextstationid: stations[1]._id,
         lastprocessedstation: null
       }
     ]);
@@ -199,22 +225,71 @@ async function seedData() {
     ]);
     console.log("✅ Created " + crowdStatuses.length + " aggregated crowd statuses");
 
+    const quizzes = await Quiz.create([
+      {
+        quizno: 1,
+        question: "Which is India's busiest railway station by passenger volume?",
+        option1: "Victoria Terminus, Mumbai",
+        option2: "Grand Central Terminal, New York",
+        option3: "Grand Central, Bangkok",
+        answer: 1,
+        subject: "Transit Knowledge"
+      },
+      {
+        quizno: 2,
+        question: "What is the safest position in a crowded train?",
+        option1: "Near the doors",
+        option2: "Middle section away from doors",
+        option3: "Roof top",
+        answer: 2,
+        subject: "Safety"
+      },
+      {
+        quizno: 3,
+        question: "Indian Railways operates approximately how many daily trains?",
+        option1: "5,000+",
+        option2: "10,000+",
+        option3: "20,000+",
+        answer: 3,
+        subject: "Transit Knowledge"
+      },
+      {
+        quizno: 4,
+        question: "What does 'crowd consensus' mean in CozyCoach?",
+        option1: "One person's opinion",
+        option2: "Aggregated data from multiple users",
+        option3: "AI prediction only",
+        answer: 2,
+        subject: "CozyCoach"
+      },
+      {
+        quizno: 5,
+        question: "How many XP do you need for one lottery ticket?",
+        option1: "25 XP",
+        option2: "50 XP",
+        option3: "100 XP",
+        answer: 2,
+        subject: "CozyCoach"
+      }
+    ]);
+    console.log("✅ Created " + quizzes.length + " quiz questions");
+
     console.log("\n🎯 COMPLETE TEST DATA READY FOR EVALUATION!");
-    console.log("\n📊 Demo Scenario:");
-    console.log("  Train: Kerala Express (#2671)");
+    console.log("\n📊 Demo Scenario (Times are dynamic based on current time):");
+    console.log("  Train: Kerala Express (#2671) - AT STATION (Kozhikode now)");
     console.log("  Route: Kozhikode → Kannur → Thalassery → Bangalore");
-    console.log("  Current Status: At Kannur, heading to Thalassery");
-    console.log("\n  User Reports (5 reports):");
-    console.log("    - Users report varying crowd distribution");
-    console.log("    - Aggregated result: F: 43%, M: 38%, R: 19%");
-    console.log("\n  Train: Rajdhani Express (#2951)");
+    console.log("  Status: Currently at Kozhikode, leaving in ~5 minutes");
+    console.log("\n  Train: Rajdhani Express (#2951) - ENROUTE");
     console.log("  Route: Mumbai → Bangalore → Delhi");
-    console.log("  Current Status: At Bangalore, heading to Delhi");
-    console.log("  User Reports (3 reports):");
-    console.log("    - Aggregated result: F: 30%, M: 42%, R: 28%");
-    console.log("\n  Train: Island Express (#6501)");
-    console.log("  Status: Scheduled");
+    console.log("  Status: Between stations, next is Bangalore");
+    console.log("\n  Train: Island Express (#6501) - AT STATION (Kozhikode now)");
     console.log("  Route: Kozhikode → Kannur → Bangalore");
+    console.log("  Status: Scheduled departure to Kannur");
+    console.log("\n  User Reports (5 reports with crowd data):");
+    console.log("    - Aggregated result: F: 43%, M: 38%, R: 19%");
+    console.log("    - Multiple users reporting on different segments");
+    console.log("\n  ✅ All trains are LIVE and can be reported on NOW");
+    console.log("  ✅ Crowd data is aggregated and ready to view");
 
     console.log("\n✨ Key Features Demonstrated:");
     console.log("  ✓ Multiple stations with different baseline crowd distributions");
@@ -223,6 +298,8 @@ async function seedData() {
     console.log("  ✓ Aggregated crowd results (not just baseline)");
     console.log("  ✓ Real-time crowd consensus from user reports");
     console.log("  ✓ Different crowd position distributions (front/middle/rear)");
+    console.log("  ✓ 5 daily quiz questions with answers");
+    console.log("  ✓ All trains currently ACTIVE for reporting and crowd viewing");
 
     await mongoose.connection.close();
     console.log("\n✅ Seed completed successfully!");
